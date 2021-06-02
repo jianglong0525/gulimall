@@ -3,5 +3,9 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+    sms:
+      host: https://cxkjsms.market.alicloudapi.com
+      path: /chuangxinsms/dxjk
+      appcode: 27a3622ad51e444a88ca40d174475cbf
   application:
     name: gulimall-third-party

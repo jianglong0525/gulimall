@@ -1,0 +1,149 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "skuTitle": "华为"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "hasStock": {
+              "value": true
+            }
+          }
+        },
+        {
+          "range": {
+            "skuPrice": {
+              "gte": 0,
+              "lte": 5000
+            }
+          }
+        },
+        {
+          "terms": {
+            "brandId": [
+              "2",
+              "3"
+            ]
+          }
+        },
+        {
+          "term": {
+            "catalogId": {
+              "value": "225"
+            }
+          }
+        },
+        {
+          "nested": {
+            "path": "attrs",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "term": {
+                      "attrs.attrId": {
+                        "value": "26"
+                      }
+                    }
+                  },
+                  {
+                    "terms": {
+                      "attrs.attrValue": [
+                        "Mali-G78"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "sort": [
+    {
+      "skuPrice": {
+        "order": "desc"
+      }
+    }
+  ],
+  "from": 0,
+  "size": 10,
+  "highlight": {
+    "fields": {
+      "skuTitle": {}
+    },
+    "pre_tags": "<b style='color:red'>",
+    "post_tags": "</b>"
+  },
+  "aggs": {
+    "brandIdAggs": {
+      "terms": {
+        "field": "brandId",
+        "size": 10
+      },
+      "aggs": {
+        "brandNameAggs": {
+          "terms": {
+            "field": "brandName",
+            "size": 10
+          }
+        },
+        "brandImgAggs": {
+          "terms": {
+            "field": "brandImg",
+            "size": 10
+          }
+        }
+      }
+    },
+    "catalogIdAggs": {
+      "terms": {
+        "field": "catalogId",
+        "size": 10
+      },
+      "aggs": {
+        "catalogNameAggs": {
+          "terms": {
+            "field": "catalogName",
+            "size": 10
+          }
+        }
+      }
+    },
+    "attrs": {
+      "nested": {
+        "path": "attrs"
+      },
+      "aggs": {
+        "attrsIdAggs": {
+          "terms": {
+            "field": "attrs.attrId",
+            "size": 10
+          },
+          "aggs": {
+            "attrNameAggs": {
+              "terms": {
+                "field": "attrs.attrName",
+                "size": 10
+              }
+            },
+            "attrValueAggs": {
+              "terms": {
+                "field": "attrs.attrValue",
+                "size": 10
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

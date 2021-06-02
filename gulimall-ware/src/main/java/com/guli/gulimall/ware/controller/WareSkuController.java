@@ -1,14 +1,12 @@
 package com.guli.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.guli.common.to.WareSkuStockTo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.guli.gulimall.ware.entity.WareSkuEntity;
 import com.guli.gulimall.ware.service.WareSkuService;
@@ -30,6 +28,15 @@ public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
 
+
+    @PostMapping("/stock")
+    public R getStock(@RequestBody List<Long> skuIds){
+        List<WareSkuStockTo> wareSkuStockTos = wareSkuService.getStock(skuIds);
+        R ok = R.ok();
+        ok.setData(wareSkuStockTos);
+        return ok;
+    }
+
     /**
      * 列表
      */
@@ -37,7 +44,6 @@ public class WareSkuController {
     //@RequiresPermissions("ware:waresku:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = wareSkuService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 

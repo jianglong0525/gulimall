@@ -1,12 +1,17 @@
 package com.guli.gulimall.ware.service.impl;
 
+import com.guli.common.to.WareSkuStockTo;
 import com.guli.common.utils.R;
 import com.guli.gulimall.ware.entity.SkuInfoEntity;
 import com.guli.gulimall.ware.feign.ProductFeignService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -64,6 +69,17 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         }else {
             this.getBaseMapper().updateStock(skuId,wareId,skuNum);
         }
+    }
+
+    @Override
+    public List<WareSkuStockTo> getStock(List<Long> skuIds) {
+        return skuIds.stream().map(skuId->{
+            Long stock = this.getBaseMapper().getStock(skuId);
+            WareSkuStockTo wareSkuStockTo = new WareSkuStockTo();
+            wareSkuStockTo.setHasStock(stock==null?false:stock>0);
+            wareSkuStockTo.setSkuId(skuId);
+            return wareSkuStockTo;
+        }).collect(Collectors.toList());
     }
 
 }
